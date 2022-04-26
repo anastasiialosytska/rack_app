@@ -10,17 +10,13 @@ class TimeFormatter
     @params = params.split(',')
   end
 
+  def call
+    self.params - TIME_FORMATS.keys
+  end
+
   def time
     body = self.params.reduce('') { |body, param| body << TIME_FORMATS[param] }
     body = body.split('').join('-')
     Time.now.strftime(body)
-  end
-
-  def invalid_params
-    self.params - TIME_FORMATS.keys
-  end
-
-  def valid?
-    invalid_params.empty?
   end
 end
