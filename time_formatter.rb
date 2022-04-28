@@ -7,31 +7,30 @@ class TimeFormatter
   attr_reader :params
 
   def initialize(params)
-    @params = params.split(',')
+      @params = params.split(',')
+      @available_formats = []
+      @unknown_formats = []
   end
 
   def call
-    if self.success?
-      time
-    else
-      invalid_string
+    @params.each do |format|
+      if TIME_FORMATS[format]
+        @available_formats << TIME_FORMATS[format]
+      else
+        @unknown_formats << format
+      end
     end
   end
 
-  def time
-    Time.now.strftime(time_string)
-  end
-
-  def time_string
-    body = self.params.reduce('') { |body, param| body << TIME_FORMATS[param] }
-    body = body.split('').join('-')
+  def success?
+    @unknown_formats.empty?
   end
 
   def invalid_string
-    self.params - TIME_FORMATS.keys
+    "Unknown time format #{@unknown_formats}"
   end
 
-  def success?
-    invalid_string.empty?
+  def time
+    Time.now.strftime(@available_formats.join('-'))
   end
 end
