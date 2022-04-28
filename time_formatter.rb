@@ -11,12 +11,27 @@ class TimeFormatter
   end
 
   def call
-    self.params - TIME_FORMATS.keys
+    if self.success?
+      time
+    else
+      invalid_string
+    end
   end
 
   def time
+    Time.now.strftime(time_string)
+  end
+
+  def time_string
     body = self.params.reduce('') { |body, param| body << TIME_FORMATS[param] }
     body = body.split('').join('-')
-    Time.now.strftime(body)
+  end
+
+  def invalid_string
+    self.params - TIME_FORMATS.keys
+  end
+
+  def success?
+    invalid_string.empty?
   end
 end

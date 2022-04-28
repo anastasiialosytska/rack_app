@@ -16,11 +16,11 @@ class App
     return response(404, "Unknown request") if path != '/time' || request_params.nil?
 
     formatter = TimeFormatter.new(request_params)
-    invalid_params = formatter.call
-    if invalid_params.empty?
-      response(200, "#{formatter.time}")
+    result = formatter.call
+    if formatter.success?
+      response(200, "#{result}")
     else
-      response(400, "Unknown time format #{invalid_params}")
+      response(400, "Unknown time format #{result}")
     end
   end
 
